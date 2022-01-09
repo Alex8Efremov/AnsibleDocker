@@ -14,7 +14,7 @@
       shell: "apt-get install git"
 
     - name: Download Dockerfile from GitHub
-      shell: "https://github.com/Alex8Efremov/AnsibleDocker.git"
+      shell: "git clone https://github.com/Alex8Efremov/AnsibleDocker.git"
 
     - name: Install Docker image
       command: "docker build -t dockerimage:v1 ."
