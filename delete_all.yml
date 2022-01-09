@@ -20,9 +20,9 @@
       shell: "{{ item }}"
       with_items:
           - dpkg -l | grep -i docker
-          - apt-get purge -y docker-engine docker docker.io docker-ce
-          - apt-get autoremove -y --purge docker-engine docker docker.io docker-ce
-      
+          - apt-get purge -y docker-engine docker docker.io docker-ce docker-ce-cli
+          - apt-get autoremove -y --purge docker-engine docker docker.io docker-ce docker-ce-cli
+
     when: ansible_distribution == "Ubuntu"
 
   - block:  #=========RedHat=========
@@ -36,4 +36,4 @@
 
 
 #          - apt-get purge -y docker-engine docker docker.io docker-ce
-#          - 
+#          -
