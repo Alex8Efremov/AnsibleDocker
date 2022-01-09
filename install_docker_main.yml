@@ -15,7 +15,7 @@
         name:
           - apt-transport-https
           - ca-certificates
-          - curl 
+          - curl
           - gnupg-agent
           - software-properties-common
         update_cache: yes
@@ -51,8 +51,10 @@
           - docker-compose
 
     when: ansible_distribution == "Ubuntu"
-   
+
   - block:    #===================Block for RedHat=====================
+    -name: update_cache
+      shell: "yum update -y"
     - name: Install yum utils
       yum:
         name: "{{ item }}"
