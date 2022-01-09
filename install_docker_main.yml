@@ -53,8 +53,8 @@
     when: ansible_distribution == "Ubuntu"
 
   - block:    #===================Block for RedHat=====================
-    - name: update_cache
-      shell: "yum update -y"
+#    - name: update_cache
+#      shell: "yum update -y"
     - name: Install yum utils
       yum:
         name: "{{ item }}"

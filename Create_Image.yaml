@@ -24,7 +24,7 @@
 
   - block:    #===================Block for RedHat=====================
     - name: Install Git RedHat
-      shell: "yum install git"
+      shell: "sudo yum install git"
 
     - name: Download Dockerfile from GitHub
       shell: "https://github.com/Alex8Efremov/AnsibleDocker.git"
