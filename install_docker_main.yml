@@ -1,0 +1,98 @@
+
+---
+- name: Download and Install Docker Image
+  hosts: all
+  become: yes
+  any_errors_fatal: true
+
+  tasks:
+  - name: Check and Print LINUX system
+    debug: var=ansible_distribution
+
+  - block:   #============Dlock for Ubuntu=============
+    - name: install prerequisites
+      apt:
+        name:
+          - apt-transport-https
+          - ca-certificates
+          - curl 
+          - gnupg-agent
+          - software-properties-common
+        update_cache: yes
+
+    - name: add apt-key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+
+    - name: add docker repo
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+
+    - name: install docker
+      apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        update_cache: yes
+
+    - name: add yserpermissions
+      shell: "usermod -aG docker $USER"
+
+    - name: install python package manager
+      apt:
+        name: python3-pip
+
+    - name: install python SDK
+      become_user: ubuntu
+      pip:
+        name:
+          - docker
+          - docker-compose
+
+    when: ansible_distribution == "Ubuntu"
+   
+  - block:    #===================Block for RedHat=====================
+    - name: Install yum utils
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+#            - epel-release
+#            - python-pip
+            - yum-utils
+            - device-mapper-persistent-data
+            - lvm2
+
+    - name: Add Docker repo
+      get_url:
+        url: https://download.docker.com/linux/centos/docker-ce.repo
+        dest: /etc/yum.repos.d/docer-ce.repo
+      become: yes
+
+    - name: Enable Docker Edge repo and Test repo
+      ini_file:
+        dest: /etc/yum.repos.d/docer-ce.repo
+        section: "{{ item }}"
+        option: enabled
+        value: 0
+      with_items: ['docker-ce-test', 'docker-ce-edge']
+
+    - name: Install Docker
+      package:
+        name: docker-ce
+        state: latest
+
+    - name: add yserpermissions
+      shell: "usermod -aG docker $USER"
+
+    when: ansible_os_family == "RedHat"
+
+  - name: Enable Docker CE service at startup
+    service:
+      name   : docker
+      state  : started
+      enabled: yes
+
+  - name: Upgrade pip3
+    shell: "pip3 install pip --upgrade"
