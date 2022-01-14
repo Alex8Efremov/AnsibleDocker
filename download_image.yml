@@ -1,0 +1,12 @@
+---
+- name: Download Docker image
+  hosts: all
+  become: yes
+  tasks:
+  - name: Pull an image
+    community.docker.docker_image:
+      name: aleksefremov/efremov
+      source: pull
+      # Select platform for pulling. If not specified, will pull whatever docker prefers.
+      pull:
+        platform: amd64

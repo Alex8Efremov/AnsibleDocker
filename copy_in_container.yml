@@ -1,0 +1,30 @@
+---
+- name: Copy html in docker container
+  hosts: all
+  become: yes
+
+  tasks:
+  - name: Get running containers
+    docker_host_info:
+      containers: yes
+    register: docker_info
+
+  - name: install Git
+    package:
+      name: "git"
+      state: latest
+      update_cache: yes
+    #when: (ansible_distribution == "RedHat")
+
+
+  - name: Clone a github web repository
+    git:
+       repo: https://github.com/Alex8Efremov/WebSite_test.git
+       dest: "{{ ansible_env.PWD }}/site"
+       clone: yes
+       update: yes
+
+  - name: Copy files to directory
+    shell: "docker cp {{ ansible_env.PWD }}/site/. {{ item }}:/var/www/html/"
+    loop: "{{ docker_info.containers | map(attribute='Id') | list }}"
+    become: yes

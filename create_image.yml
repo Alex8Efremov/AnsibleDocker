@@ -1,0 +1,17 @@
+---
+- name: Create web image
+  hosts: all
+  tasks:
+  - name: get data
+    debug: var=ansible_env.PWD
+
+  - name: Copy To-Remote
+    copy:
+      src: Dockerfile
+      dest: "{{ ansible_env.PWD }}/"
+
+  - name: Install Docker image
+    command: "docker build -t dockerimage:v1 ."
+    args:
+      chdir: "{{ ansible_env.PWD }}/"
+    become: yes

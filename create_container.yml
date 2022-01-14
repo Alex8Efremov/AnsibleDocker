@@ -1,0 +1,16 @@
+---
+- name: Create containers
+  hosts: all
+  become: true
+
+  tasks:
+  - name: web container
+    docker_container:
+      name: Ansible_web
+      image: dockerimage:v1 #aleksefremov/efremov 
+      state: started
+      ports:
+        - "4444:80"
+        - "5555:80"
+      tty: true
+      detach: true
